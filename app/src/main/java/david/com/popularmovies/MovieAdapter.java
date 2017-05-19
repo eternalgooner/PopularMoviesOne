@@ -47,7 +47,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
-        //Picasso.with(context).load("http://image.tmdb.org/t/p/w185//nBNZadXqJSdt05SHLqgT0HuC5Gm.jpg").into(holder.mImageView);
         Log.d(TAG, mPosterPaths[position]);
         //GridLayout gridLayout = holder.gridLayout;
         int width = context.getResources().getDisplayMetrics().widthPixels;

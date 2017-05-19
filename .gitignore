@@ -8,3 +8,5 @@
 /captures
 .externalNativeBuild
 *.txt
+api_key.txt
+

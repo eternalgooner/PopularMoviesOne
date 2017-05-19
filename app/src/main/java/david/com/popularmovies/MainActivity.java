@@ -1,10 +1,10 @@
 package david.com.popularmovies;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +17,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ListItemClickListener{
 
@@ -25,8 +28,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     private MovieAdapter mMovieAdapter;
     private RecyclerView mRecyclerView;
     private String[] posterPaths;
+    private ArrayList<HashMap> movieList = new ArrayList<>();
+
     private GridLayoutManager gridLayoutManager;
     private boolean showingMostPopular = true;
+    private Bundle movieBundle = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     }
 
     private void loadMovieList(String sortType) {
-        URL myUrl = NetworkUtils.buildUrl(sortType);
+        URL myUrl = NetworkUtils.buildUrl(sortType, getApplicationContext());
         new TheMovieDbTask().execute(myUrl);
     }
 
@@ -55,6 +61,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     public void onListItemClick(int clickedItem) {
         String toastMessage = "Item : " + clickedItem + " clicked";
         Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
+        movieBundle.putSerializable("selectedMovie", movieList.get(clickedItem));
+        intent.putExtras(movieBundle);
+        MainActivity.this.startActivity(intent);
     }
 
     @Override
@@ -69,11 +80,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         switch (itemSelected){
             case R.id.menu_most_popular:
-                //TODO finish this off - show most popular method
                 if(!showingMostPopular) showMostPopular();
                 break;
             case R.id.menu_highest_rated:
-                //TODO show highest rated method
                 if(showingMostPopular) showHighestRated();
                 break;
         }
@@ -81,11 +90,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     }
 
     private void showHighestRated() {
+        showingMostPopular = false;
         loadMovieList("highestRated");
     }
 
     private void showMostPopular() {
-       loadMovieList("mostPopular");
+        showingMostPopular = true;
+        loadMovieList("mostPopular");
     }
 
     public class TheMovieDbTask extends AsyncTask<URL, Void, String> {
@@ -123,6 +134,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                         posterPaths[next] = nextMovie.getString("poster_path");
                         Log.d(TAG, posterPaths[next]);
                         posterPaths[next] = "https://image.tmdb.org/t/p/w185/" + posterPaths[next];
+                        getAllMovieData(nextMovie);
                         ++next;
                     }
                     //mMovieAdapter.setMovieData(posterPaths);
@@ -135,6 +147,22 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                 Log.d(TAG, "empty data back from themoviedb api call");
             }
            // mMovieAdapter.setMovieData(posterPaths);
+        }
+
+        private void getAllMovieData(JSONObject clickedMovie) {
+            HashMap movieMap = new HashMap();
+            try {
+                movieMap.put("title", clickedMovie.getString("original_title"));
+                movieMap.put("overview", clickedMovie.getString("overview"));
+                movieMap.put("releaseDate", clickedMovie.getString("release_date"));
+                movieMap.put("posterPath", clickedMovie.getString("poster_path"));
+                movieMap.put("voteAverage", clickedMovie.getString("vote_average"));
+                movieList.add(movieMap);
+                //movieBundle.putSerializable("allMovieData", movieMap);
+            } catch (JSONException e) {
+                Log.d(TAG, "error in getting all selected movie details");
+                e.printStackTrace();
+            }
         }
     }
 }

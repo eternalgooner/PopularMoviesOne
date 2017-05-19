@@ -1,38 +1,55 @@
 package david.com.popularmovies;
 
+import android.content.Context;
 import android.net.Uri;
-
-import java.io.File;
-import java.io.FileNotFoundException;
+import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.Scanner;
+
 
 /**
  * Created by David on 11-May-17.
  */
 
 public class NetworkUtils {
-    //static String base_url_popular = "https://api.themoviedb.org/3/movie/popular?api_key=" + getTheMovieDbKey();
-    static String base_url_popular = "https://api.themoviedb.org/3/movie/popular?api_key=";
 
-    private static String getTheMovieDbKey() {
-        String key = "";
-        try {
-            key = new Scanner(new File("D:\\David\\Documents\\app keys\\themoviedbkey.txt")).next();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return key;
-        //File file = new File("D:\\David\\Documents\\app keys\\themoviedbkey.txt");
+    private static final String TAG = NetworkUtils.class.getSimpleName();
+    private static Context context;
+    private static String base_url_popular;
+    private static String base_url_top_rated;
+
+    private static void initData() {
+        String apiKey = getKey();
+        base_url_popular = "https://api.themoviedb.org/3/movie/popular?api_key=" + apiKey;
+        base_url_top_rated = "https://api.themoviedb.org/3/movie/top_rated?api_key=" + apiKey;
     }
 
-    public static URL buildUrl(String sortType){
-        Uri theMovieDbUri = Uri.parse(base_url_popular).buildUpon().build();
+    private static String getKey() {
+        Scanner scanner = new Scanner(context.getResources().openRawResource(R.raw.api_key));
+        String result = "";
+        while (scanner.hasNext()){
+            result = scanner.next();
+        }
+        Log.d(TAG, "in get key, result from scanner is: " + result);
+        scanner.close();
+        return result;
+    }
+
+    public static URL buildUrl(String sortType, Context context){
+        NetworkUtils.context = context;
+        initData();
+        String sortParam = "";
+        if(sortType.equals("mostPopular")){
+            sortParam = base_url_popular;
+        }else if(sortType.equals("highestRated")){
+            sortParam = base_url_top_rated;
+        }
+
+        Uri theMovieDbUri = Uri.parse(sortParam).buildUpon().build();
 
         URL theMoveDbUrl = null;
         try {
