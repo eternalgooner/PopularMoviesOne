@@ -52,6 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         //GridLayout gridLayout = holder.gridLayout;
         int width = context.getResources().getDisplayMetrics().widthPixels;
         Picasso.with(context).load(mPosterPaths[position]).resize(width/2, 0).into(holder.mImageView);
+        //Picasso.with(context).load(mPosterPaths[position]).into(holder.mImageView);
     }
 
     @Override

@@ -95,10 +95,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     private void showMovies(){
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_moviePosters);
-
-        //GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(), 2);
-        //LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        gridLayoutManager = new GridLayoutManager(this, 2);
+        gridLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mMovieAdapter = new MovieAdapter(posterPaths, NUM_LIST_ITEMS, this);
         mRecyclerView.setAdapter(mMovieAdapter);
@@ -186,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                     JSONObject nextMovie = JsonUtils.getJSONObject(jsonMoviesArray, next);
                     posterPaths[next] = JsonUtils.getString(nextMovie, "poster_path");
                     Log.d(TAG, posterPaths[next]);
-                    posterPaths[next] = "https://image.tmdb.org/t/p/w185/" + posterPaths[next];
+                    posterPaths[next] = "https://image.tmdb.org/t/p/w342/" + posterPaths[next];     //other poster sizes are w92, w154, w185, w342, w500, w780 or original
                     getAllMovieData(nextMovie);
                     ++next;
                 }
