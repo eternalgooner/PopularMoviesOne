@@ -12,5 +12,14 @@
         android:id="@+id/rv_moviePosters"
         android:adjustViewBounds = "true"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/message_no_network_connection"
+        android:text="@string/message_no_network"
+        android:visibility="invisible"
+        android:textSize="32sp"
+        android:gravity="center"/>
+
 
 </FrameLayout>

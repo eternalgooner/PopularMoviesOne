@@ -18,7 +18,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private TextView userRating;
     private TextView releaseDate;
     protected TextView moveSummary;
-    //private String movieSelected;
     private HashMap movieSelected;
 
     @Override
@@ -31,7 +30,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
         releaseDate = (TextView) findViewById(R.id.txtMovieReleaseDate);
         moveSummary = (TextView) findViewById(R.id.txtMovieSummary);
         moviePoster = (ImageView) findViewById(R.id.imgMoviePoster);
-        //movieSelected = getIntent().getStringExtra("movie");
 
         Bundle bundle = this.getIntent().getExtras();
         movieSelected = (HashMap) bundle.getSerializable("selectedMovie");
@@ -42,7 +40,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     private void displayMovieDetails(HashMap movie) {
         String posterPrefix = "http://image.tmdb.org/t/p/w780/";
         movieTitle.setText((String)movie.get("title"));
-        moveSummary.setText((String)movie.get("overview")); //not working
+        moveSummary.setText((String)movie.get("overview"));
         userRating.setText((String)movie.get("voteAverage"));
         releaseDate.setText((String)movie.get("releaseDate"));
         Picasso.with(getApplicationContext()).load(posterPrefix + (String) movie.get("posterPath")).into(moviePoster);

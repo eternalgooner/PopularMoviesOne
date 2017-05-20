@@ -45,6 +45,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         return new MovieAdapterViewHolder(view);
     }
 
+    //TODO fix grid layout
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
         Log.d(TAG, mPosterPaths[position]);

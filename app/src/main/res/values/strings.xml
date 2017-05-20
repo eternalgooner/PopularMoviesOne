@@ -2,4 +2,6 @@
     <string name="app_name">Popular Movies</string>
     <string name="most_popular">most popular</string>
     <string name="highest_rated">highest rated</string>
+    <string name="movie_poster_image_content_description">movie poster image</string>
+    <string name="message_no_network">please check your network connection</string>
 </resources>
