@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
     private MovieAdapter mMovieAdapter;
     private RecyclerView mRecyclerView;
     private String[] posterPaths;
-    private ArrayList<HashMap> movieList = new ArrayList<>();
+    private ArrayList<HashMap> movieList;
     private GridLayoutManager gridLayoutManager;
     private boolean showingMostPopular = true;
     private Bundle movieBundle = new Bundle();
@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         return ((activeNetworkInfo != null) && (activeNetworkInfo.isConnected()));
     }
 
+
+    //TODO implement onSaveStateInstace & onRestoreStateInstance
 //    @Override
 //    protected void onPause() {
 //        super.onPause();
@@ -76,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             mRecyclerView.getLayoutManager().onRestoreInstanceState(bundleRecyclerViewState);
         }
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
@@ -148,13 +149,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         loadMovieList("mostPopular");
     }
 
-    //TODO implement onSaveStateInstace & onRestoreStateInstance
-
     public class TheMovieDbTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            movieList = new ArrayList<>();
         }
 
         @Override
@@ -170,11 +170,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             }
         }
 
-        //TODO need to get 2nd set of movie data stored, as when clicking movie on 2nd sort - it shows incorrect movie from 1st sort
         @Override
         protected void onPostExecute(String theMovieDbSearchResults) {
             posterPaths = new String[20];
             if (theMovieDbSearchResults != null && !theMovieDbSearchResults.equals("")) {
+                Log.d(TAG, theMovieDbSearchResults);
                 JSONObject jsonObject = JsonUtils.getJSONObject(theMovieDbSearchResults);
                 JSONArray jsonMoviesArray = JsonUtils.getJSONArray(jsonObject, "results");
                 String[] moviesResult = new String[jsonMoviesArray.length()];
