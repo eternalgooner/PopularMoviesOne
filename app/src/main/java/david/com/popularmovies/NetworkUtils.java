@@ -24,8 +24,8 @@ public class NetworkUtils {
 
     private static void initData() {
         String apiKey = getKey();
-        base_url_popular = "https://api.themoviedb.org/3/movie/popular?api_key=" + apiKey;
-        base_url_top_rated = "https://api.themoviedb.org/3/movie/top_rated?api_key=" + apiKey;
+        base_url_popular = context.getString(R.string.base_url_popular) + apiKey;
+        base_url_top_rated = context.getString(R.string.base_url_top_rated) + apiKey;
     }
 
     private static String getKey() {
@@ -34,7 +34,7 @@ public class NetworkUtils {
         while (scanner.hasNext()){
             result = scanner.next();
         }
-        Log.d(TAG, "in get key, result from scanner is: " + result);
+        Log.d(TAG, "in getKey(), result from scanner is: " + result);
         scanner.close();
         return result;
     }

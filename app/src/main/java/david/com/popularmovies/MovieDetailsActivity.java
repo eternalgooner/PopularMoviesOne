@@ -1,8 +1,11 @@
 package david.com.popularmovies;
 
+import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,10 +23,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected TextView moveSummary;
     private HashMap movieSelected;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("Movie Details");
 
         movieTitle = (TextView) findViewById(R.id.txtMovieTitle);
         userRating = (TextView) findViewById(R.id.txtMovieUserRating);
@@ -38,12 +46,20 @@ public class MovieDetailsActivity extends AppCompatActivity {
     }
 
     private void displayMovieDetails(HashMap movie) {
-        String posterPrefix = "http://image.tmdb.org/t/p/w780/";
+        StringBuilder movieYear = new StringBuilder((String) movie.get("releaseDate"));
+        String year = movieYear.substring(0,4);
+        String posterPrefix = getString(R.string.url_poster_prefix);
         movieTitle.setText((String)movie.get("title"));
         moveSummary.setText((String)movie.get("overview"));
-        userRating.setText((String)movie.get("voteAverage"));
-        releaseDate.setText((String)movie.get("releaseDate"));
+        userRating.setText((String)movie.get("voteAverage") + "/10");
+        releaseDate.setText(year);
         Picasso.with(getApplicationContext()).load(posterPrefix + (String) movie.get("posterPath")).into(moviePoster);
         Log.d(TAG, "poster path is: " + movie.get("posterPath"));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
     }
 }

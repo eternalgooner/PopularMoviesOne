@@ -47,6 +47,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         txtNoNetworkMessage = (TextView) findViewById(R.id.message_no_network_connection);
+
+        if(savedInstanceState != null){
+            bundleRecyclerViewState = savedInstanceState;
+            mRecyclerView = bundleRecyclerViewState.getParcelable("test save");
+            mRecyclerView.getLayoutManager().onRestoreInstanceState(bundleRecyclerViewState);
+        }
+
         if(isNetworkAvailable()){
             loadMovieList("mostPopular"); //TODO hide no network message when network comes back - BUG
         }else{
@@ -84,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         super.onSaveInstanceState(outState, outPersistentState);
         Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
         bundleRecyclerViewState.putParcelable("recyclerState", listState);
+        outState.putParcelable("test save", bundleRecyclerViewState);
     }
 
     @Override
@@ -183,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                     JSONObject nextMovie = JsonUtils.getJSONObject(jsonMoviesArray, next);
                     posterPaths[next] = JsonUtils.getString(nextMovie, "poster_path");
                     Log.d(TAG, posterPaths[next]);
-                    posterPaths[next] = "https://image.tmdb.org/t/p/w342/" + posterPaths[next];     //other poster sizes are w92, w154, w185, w342, w500, w780 or original
+                    posterPaths[next] = "https://image.tmdb.org/t/p/w780/" + posterPaths[next];     //other poster sizes are w92, w154, w185, w342, w500, w780 or original
                     getAllMovieData(nextMovie);
                     ++next;
                 }
