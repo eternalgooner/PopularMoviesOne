@@ -8,6 +8,10 @@ import org.json.JSONObject;
 
 /**
  * Created by David on 20-May-17.
+ *
+ * Utilities class to work with JSON data
+ *
+ * - string literals have not been put into the strings.xml file as they are not user-facing
  */
 
 public class JsonUtils {

@@ -13,6 +13,22 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
+/**
+ * Class that shows the selected movie details
+ * - movie details are retrieved as a bundle from the intent
+ * - movie details are then retrieved as a HashMap from the bundle
+ *
+ * UI:
+ * - constraint layout is used to layout the view objects
+ *
+ * STRING LITERALS:
+ * - string literals have not been put into the strings.xml file as they are not user-facing
+ *
+ * ATTRIBUTION:
+ * - some code was implemented with help from StackOverflow
+ *
+ */
+
 public class MovieDetailsActivity extends AppCompatActivity {
 
     private static final String TAG = MovieDetailsActivity.class.getSimpleName();
@@ -27,11 +43,12 @@ public class MovieDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "entering onCreate");
         setContentView(R.layout.activity_movie_details);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Movie Details");
+        actionBar.setTitle(R.string.title_movie_details);
 
         movieTitle = (TextView) findViewById(R.id.txtMovieTitle);
         userRating = (TextView) findViewById(R.id.txtMovieUserRating);
@@ -43,9 +60,11 @@ public class MovieDetailsActivity extends AppCompatActivity {
         movieSelected = (HashMap) bundle.getSerializable("selectedMovie");
 
         displayMovieDetails(movieSelected);
+        Log.d(TAG, "exiting onCreate");
     }
 
     private void displayMovieDetails(HashMap movie) {
+        Log.d(TAG, "entering displayMovieDetails");
         StringBuilder movieYear = new StringBuilder((String) movie.get("releaseDate"));
         String year = movieYear.substring(0,4);
         String posterPrefix = getString(R.string.url_poster_prefix);

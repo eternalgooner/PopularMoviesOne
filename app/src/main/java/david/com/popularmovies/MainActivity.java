@@ -28,6 +28,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * class that starts the application
+ * - has inner class TheMovieDbTask
+ *
+ * - display message if no network connection
+ *
+ * - if there is a network connection it will:
+ *      - build a URL
+ *      - pass the URL to AsyncTask to retrieve JSON data from themoviedb
+ *      - JSON data is then stored for each movie in a HashMap, which is then added to an ArrayList of movies
+ *      - display movie posters in a grid layout
+ *
+ * UI:
+ * - create RecyclerView, GridLayoutManager & Adapter for displaying scrolling list
+ * - create menu option to sort by highest rated or most popular
+ * - upon poster click, new activity should show clicked movie details
+ *
+ * STRING LITERALS:
+ * - string literals have not been put into the strings.xml file as they are not user-facing
+ *
+ * ATTRIBUTION:
+ * - some code was implemented with help from Udacity Android course
+ *
+ * INFO:
+ * you need to supply your own API key to retrieve data from themoviedb (API key is used in NetworkUtils class - API key is stored in res/raw as txt file)
+ */
+
 public class MainActivity extends AppCompatActivity implements MovieAdapter.ListItemClickListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -44,26 +71,33 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "entering onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         txtNoNetworkMessage = (TextView) findViewById(R.id.message_no_network_connection);
 
-        if(savedInstanceState != null){
-            bundleRecyclerViewState = savedInstanceState;
-            mRecyclerView = bundleRecyclerViewState.getParcelable("test save");
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(bundleRecyclerViewState);
-        }
+        loadMovieList("mostPopular"); //TODO hide no network message when network comes back - BUG
 
-        if(isNetworkAvailable()){
-            loadMovieList("mostPopular"); //TODO hide no network message when network comes back - BUG
-        }else{
-            txtNoNetworkMessage.setVisibility(View.VISIBLE);
-        }
+//        if(savedInstanceState != null){
+//            bundleRecyclerViewState = savedInstanceState;
+//            mRecyclerView = bundleRecyclerViewState.getParcelable("test save");
+//            mRecyclerView.getLayoutManager().onRestoreInstanceState(bundleRecyclerViewState);
+//        }
+//
+//        if(isNetworkAvailable()){
+//            loadMovieList("mostPopular"); //TODO hide no network message when network comes back - BUG
+//        }else{
+//            txtNoNetworkMessage.setVisibility(View.VISIBLE);
+//        }
+
+        Log.d(TAG, "exiting onCreate");
     }
 
     private boolean isNetworkAvailable(){
+        Log.d(TAG, "entering isNetworkAvailable");
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        Log.d(TAG, "exiting isNetworkAvailable");
         return ((activeNetworkInfo != null) && (activeNetworkInfo.isConnected()));
     }
 
@@ -77,64 +111,71 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 //        bundleRecyclerViewState.putParcelable("recyclerState", listState);
 //    }
 //
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(bundleRecyclerViewState != null){
-            //bundleRecyclerViewState = bundleRecyclerViewState.getParcelable("recyclerState");
-            mRecyclerView.getLayoutManager().onRestoreInstanceState(bundleRecyclerViewState);
-        }
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+////        if(bundleRecyclerViewState != null){
+////            //bundleRecyclerViewState = bundleRecyclerViewState.getParcelable("recyclerState");
+////            mRecyclerView.getLayoutManager().onRestoreInstanceState(bundleRecyclerViewState);
+////        }
+//    }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
-        bundleRecyclerViewState.putParcelable("recyclerState", listState);
-        outState.putParcelable("test save", bundleRecyclerViewState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if(bundleRecyclerViewState != null){
-            bundleRecyclerViewState = bundleRecyclerViewState.getParcelable("recyclerState");
-        }
-    }
+//    @Override
+//    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+//        super.onSaveInstanceState(outState, outPersistentState);
+//        Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+//        bundleRecyclerViewState.putParcelable("recyclerState", listState);
+//        outState.putParcelable("test save", bundleRecyclerViewState);
+//    }
+//
+//    @Override
+//    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//        super.onRestoreInstanceState(savedInstanceState);
+//        if(bundleRecyclerViewState != null){
+//            bundleRecyclerViewState = bundleRecyclerViewState.getParcelable("recyclerState");
+//        }
+//    }
 
     private void showMovies(){
+        Log.d(TAG, "entering showMovies");
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_moviePosters);
         gridLayoutManager = new GridLayoutManager(this, 3);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mMovieAdapter = new MovieAdapter(posterPaths, NUM_LIST_ITEMS, this);
         mRecyclerView.setAdapter(mMovieAdapter);
+        Log.d(TAG, "exiting showMovies");
     }
 
     private void loadMovieList(String sortType) {
+        Log.d(TAG, "entering loadMovieList");
         URL myUrl = NetworkUtils.buildUrl(sortType, getApplicationContext());
         new TheMovieDbTask().execute(myUrl);
+        Log.d(TAG, "exiting loadMovieList");
     }
 
     @Override
     public void onListItemClick(int clickedItem) {
-        String toastMessage = "Item : " + clickedItem + " clicked";
-        Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
-
+        Log.d(TAG, "entering onListItemClick");
         Intent intent = new Intent(MainActivity.this, MovieDetailsActivity.class);
         movieBundle.putSerializable("selectedMovie", movieList.get(clickedItem));
         intent.putExtras(movieBundle);
         MainActivity.this.startActivity(intent);
+        Log.d(TAG, "exiting onListItemClick");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "entering onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.movie_menu, menu);
+        Log.d(TAG, "exiting onCreateOptionsMenu");
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.d(TAG, "entering onOptionsItemSelected");
         int itemSelected = item.getItemId();
+        Log.d(TAG, "item id is: " + itemSelected);
 
         switch (itemSelected){
             case R.id.menu_most_popular:
@@ -167,19 +208,23 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 
         @Override
         protected String doInBackground(URL... params) {
+            Log.d(TAG, "entering doInBackground");
             URL requestPopularMoviesUrl = params[0];
             String theMovieDbResult = null;
             try {
                 theMovieDbResult = NetworkUtils.getResponseFromHttpUrl(requestPopularMoviesUrl);
+                Log.d(TAG, "exiting doInBackground");
                 return theMovieDbResult;
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.d(TAG, "exiting doInBackground after exception");
                 return null;
             }
         }
 
         @Override
         protected void onPostExecute(String theMovieDbSearchResults) {
+            Log.d(TAG, "entering onPostExecute");
             posterPaths = new String[20];
             if (theMovieDbSearchResults != null && !theMovieDbSearchResults.equals("")) {
                 Log.d(TAG, theMovieDbSearchResults);
@@ -196,12 +241,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
                     ++next;
                 }
                 showMovies();
+                Log.d(TAG, "exiting onPostExecute");
             } else {
                 Log.d(TAG, "empty data back from themoviedb api call");
             }
         }
 
         private void getAllMovieData(JSONObject clickedMovie) {
+            Log.d(TAG, "entering getAllMovieData");
             HashMap movieMap = new HashMap();
             movieMap.put("title", JsonUtils.getString(clickedMovie, "original_title"));
             movieMap.put("overview", JsonUtils.getString(clickedMovie, "overview"));
@@ -209,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
             movieMap.put("posterPath", JsonUtils.getString(clickedMovie, "poster_path"));
             movieMap.put("voteAverage", JsonUtils.getString(clickedMovie, "vote_average"));
             movieList.add(movieMap);
+            Log.d(TAG, "exiting getAllMovieData");
         }
     }
 }

@@ -15,12 +15,18 @@ import com.squareup.picasso.Picasso;
 
 /**
  * Created by David on 13-May-17.
+ *
+ * Class that creates an Adapter & a ViewHolder to bind data & hold view objects to recycle
+ * - has inner class MovieAdapterViewHolder
+ * - has inner interface ListItemClickListener
+ *
+ * ATTRIBUTION:
+ * - some code was implemented with help from Udacity Android course
+ *
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-//    private RecyclerView movieRecyclerView;
-//    private ImageView imageView;
     private Context context;
     private int mNumItems;
     private static final String TAG = MovieAdapter.class.getSimpleName();
@@ -36,31 +42,33 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //movieRecyclerView = (RecyclerView) parent.findViewById(R.id.rv_moviePosters);
+        Log.d(TAG, "entering onCreateViewHolder");
         context = parent.getContext();
         int layoutIdForListItem = R.layout.thumbnail_layout;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutIdForListItem, parent, false);
+        Log.d(TAG, "exiting onCreateViewHolder");
         return new MovieAdapterViewHolder(view);
     }
 
 
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
+        Log.d(TAG, "entering onBindViewHolder");
         Log.d(TAG, mPosterPaths[position]);
-        //GridLayout gridLayout = holder.gridLayout;
         int width = context.getResources().getDisplayMetrics().widthPixels;
         Picasso.with(context).load(mPosterPaths[position]).resize(width/2, 0).into(holder.mImageView);
-        //Picasso.with(context).load(mPosterPaths[position]).into(holder.mImageView);
+        Log.d(TAG, "exiting onBindViewHolder");
     }
 
     @Override
     public int getItemCount() {
+        Log.d(TAG, "entering getItemCount. itemCount is: " + mPosterPaths.length);
         return mPosterPaths.length;
     }
 
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public final ImageView mImageView;
         public final FrameLayout frameLayout;
@@ -74,14 +82,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
         @Override
         public void onClick(View v) {
+            Log.d(TAG, "entering onClick in MovieAdapterViewHolder");
             int clickedPosition = getAdapterPosition();
             onClickListener.onListItemClick(clickedPosition);
         }
-    }
-
-    void setMovieData(String[] posterPaths){
-        mPosterPaths = posterPaths;
-        notifyDataSetChanged();
     }
 
     public interface ListItemClickListener{

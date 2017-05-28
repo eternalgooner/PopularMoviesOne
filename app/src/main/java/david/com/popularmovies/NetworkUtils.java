@@ -13,6 +13,20 @@ import java.util.Scanner;
 
 /**
  * Created by David on 11-May-17.
+ *
+ * Class info:
+ * - builds Uri with API key
+ * - returns a URL to caller
+ * - makes http request
+ * - retrieves JSON data as String & returns it to caller
+ *
+ * STRING LITERALS:
+ * - string literals have not been put into the strings.xml file as they are not user-facing
+ *
+ * ATTRIBUTION:
+ * - some code was implemented with help from Udacity Android course
+ *
+ *
  */
 
 public class NetworkUtils {
@@ -31,10 +45,10 @@ public class NetworkUtils {
     private static String getKey() {
         Scanner scanner = new Scanner(context.getResources().openRawResource(R.raw.api_key));
         String result = "";
+
         while (scanner.hasNext()){
             result = scanner.next();
         }
-        Log.d(TAG, "in getKey(), result from scanner is: " + result);
         scanner.close();
         return result;
     }
@@ -43,6 +57,7 @@ public class NetworkUtils {
         NetworkUtils.context = context;
         initData();
         String sortParam = "";
+
         if(sortType.equals("mostPopular")){
             sortParam = base_url_popular;
         }else if(sortType.equals("highestRated")){
@@ -50,8 +65,8 @@ public class NetworkUtils {
         }
 
         Uri theMovieDbUri = Uri.parse(sortParam).buildUpon().build();
-
         URL theMoveDbUrl = null;
+
         try {
             theMoveDbUrl = new URL(theMovieDbUri.toString());
         } catch (MalformedURLException e) {
@@ -65,11 +80,10 @@ public class NetworkUtils {
 
         try {
             InputStream in = urlConnection.getInputStream();
-
             Scanner scanner = new Scanner(in);
             scanner.useDelimiter("\\A");
-
             boolean hasInput = scanner.hasNext();
+
             if(hasInput){
                 return scanner.next();
             }else{
