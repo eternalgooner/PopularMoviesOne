@@ -74,21 +74,25 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
         Log.d(TAG, "entering onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_moviePosters);
+        gridLayoutManager = new GridLayoutManager(this, 3);
+        mRecyclerView.setLayoutManager(gridLayoutManager);
         txtNoNetworkMessage = (TextView) findViewById(R.id.message_no_network_connection);
 
-        loadMovieList("mostPopular"); //TODO hide no network message when network comes back - BUG
-
-//        if(savedInstanceState != null){
-//            bundleRecyclerViewState = savedInstanceState;
-//            mRecyclerView = bundleRecyclerViewState.getParcelable("test save");
-//            mRecyclerView.getLayoutManager().onRestoreInstanceState(bundleRecyclerViewState);
-//        }
+        //loadMovieList("mostPopular"); //TODO hide no network message when network comes back - BUG
 //
-//        if(isNetworkAvailable()){
-//            loadMovieList("mostPopular"); //TODO hide no network message when network comes back - BUG
-//        }else{
-//            txtNoNetworkMessage.setVisibility(View.VISIBLE);
+//        if(savedInstanceState != null){
+//            //bundleRecyclerViewState = savedInstanceState;
+//            //mRecyclerView = savedInstanceState.getParcelable("test save");
+//            Parcelable listState = savedInstanceState.getParcelable("rvState");
+//            mRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
 //        }
+
+        if(isNetworkAvailable()){
+            loadMovieList("mostPopular"); //TODO hide no network message when network comes back - BUG
+        }else{
+            txtNoNetworkMessage.setVisibility(View.VISIBLE);
+        }
 
         Log.d(TAG, "exiting onCreate");
     }
@@ -127,20 +131,29 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.List
 //        bundleRecyclerViewState.putParcelable("recyclerState", listState);
 //        outState.putParcelable("test save", bundleRecyclerViewState);
 //    }
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        Parcelable listState = mRecyclerView.getLayoutManager().onSaveInstanceState();
+//        outState.putParcelable("rvState", listState);
+//    }
 //
 //    @Override
 //    protected void onRestoreInstanceState(Bundle savedInstanceState) {
 //        super.onRestoreInstanceState(savedInstanceState);
-//        if(bundleRecyclerViewState != null){
-//            bundleRecyclerViewState = bundleRecyclerViewState.getParcelable("recyclerState");
+//        if(savedInstanceState != null){
+//            Parcelable rvState = savedInstanceState.getParcelable("rvState");
+//            Parcelable listState = savedInstanceState.getParcelable("rvState");
+//            mRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
 //        }
 //    }
 
     private void showMovies(){
         Log.d(TAG, "entering showMovies");
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_moviePosters);
-        gridLayoutManager = new GridLayoutManager(this, 3);
-        mRecyclerView.setLayoutManager(gridLayoutManager);
+        //mRecyclerView = (RecyclerView) findViewById(R.id.rv_moviePosters);
+        //gridLayoutManager = new GridLayoutManager(this, 3);
+        //mRecyclerView.setLayoutManager(gridLayoutManager);
         mMovieAdapter = new MovieAdapter(posterPaths, NUM_LIST_ITEMS, this);
         mRecyclerView.setAdapter(mMovieAdapter);
         Log.d(TAG, "exiting showMovies");
