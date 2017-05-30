@@ -9,4 +9,7 @@
 .externalNativeBuild
 *.txt
 api_key.txt
+gradle.properties
+.properties
+
 
